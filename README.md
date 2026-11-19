@@ -25,30 +25,6 @@
 
 ---
 
-## 📑 Table of Contents
-
-- [Overview & Value Proposition](#-overview--value-proposition)
-- [Application Showcase](#-application-showcase)
-  - [1. Plant & Fleet Overview Dashboard](#1-plant--fleet-overview-dashboard)
-  - [2. AI Failure Prediction & Diagnostic Studio](#2-ai-failure-prediction--diagnostic-studio)
-- [System Architecture](#-system-architecture)
-- [End-to-End MLOps Pipeline](#-end-to-end-mlops-pipeline)
-  - [Dataset & Feature Engineering](#dataset--feature-engineering)
-  - [Data Leakage Prevention](#data-leakage-prevention)
-  - [Stratified Splitting & Imbalance Handling](#stratified-splitting--imbalance-handling)
-  - [Model Competition & Champion Selection](#model-competition--champion-selection)
-  - [F2-Score Optimal Thresholding](#f2-score-optimal-thresholding)
-  - [MLflow Experiment Tracking](#mlflow-experiment-tracking)
-- [Fleet Operations & Maintenance Workflows](#-fleet-operations--maintenance-workflows)
-- [Technology Stack](#-technology-stack)
-- [Project Directory Structure](#-project-directory-structure)
-- [Quickstart with Docker Compose](#-quickstart-with-docker-compose)
-- [Local Development Setup (Without Docker)](#-local-development-setup-without-docker)
-- [REST API Reference](#-rest-api-reference)
-- [Implementation Boundaries & Roadmap](#-implementation-boundaries--roadmap)
-- [License & Acknowledgements](#-license--acknowledgements)
-
----
 
 ## 🌟 Overview & Value Proposition
 
