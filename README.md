@@ -25,30 +25,6 @@
 
 ---
 
-## 📑 Table of Contents
-
-- [Overview & Value Proposition](#-overview--value-proposition)
-- [Application Showcase](#-application-showcase)
-  - [1. Plant & Fleet Overview Dashboard](#1-plant--fleet-overview-dashboard)
-  - [2. AI Failure Prediction & Diagnostic Studio](#2-ai-failure-prediction--diagnostic-studio)
-- [System Architecture](#-system-architecture)
-- [End-to-End MLOps Pipeline](#-end-to-end-mlops-pipeline)
-  - [Dataset & Feature Engineering](#dataset--feature-engineering)
-  - [Data Leakage Prevention](#data-leakage-prevention)
-  - [Stratified Splitting & Imbalance Handling](#stratified-splitting--imbalance-handling)
-  - [Model Competition & Champion Selection](#model-competition--champion-selection)
-  - [F2-Score Optimal Thresholding](#f2-score-optimal-thresholding)
-  - [MLflow Experiment Tracking](#mlflow-experiment-tracking)
-- [Fleet Operations & Maintenance Workflows](#-fleet-operations--maintenance-workflows)
-- [Technology Stack](#-technology-stack)
-- [Project Directory Structure](#-project-directory-structure)
-- [Quickstart with Docker Compose](#-quickstart-with-docker-compose)
-- [Local Development Setup (Without Docker)](#-local-development-setup-without-docker)
-- [REST API Reference](#-rest-api-reference)
-- [Implementation Boundaries & Roadmap](#-implementation-boundaries--roadmap)
-- [License & Acknowledgements](#-license--acknowledgements)
-
----
 
 ## 🌟 Overview & Value Proposition
 
@@ -291,62 +267,6 @@ Depending on the calculated probability and specific sensor readings, the system
 | **MLOps** | MLflow | 2.22.0 | Experiment tracking, model registry, artifact storage |
 | **Deployment** | Docker & Compose | v2+ | Multi-container orchestration |
 | | Nginx | Alpine | Static production frontend asset web server |
-
----
-
-## 📂 Project Directory Structure
-
-```text
-machinemitra-predictive-maintenance/
-├── .github/                       # CI/CD workflows (if configured)
-├── backend/                       # Python FastAPI Backend Service
-│   ├── app/
-│   │   ├── __init__.py
-│   │   ├── db.py                  # SQLite schema initialization and connection helpers
-│   │   ├── main.py                # REST endpoints, prediction logic, background training
-│   │   └── schemas.py             # Pydantic models for input validation
-│   ├── tests/
-│   │   └── test_risk.py           # Unit tests for risk categorization and action logic
-│   ├── Dockerfile                 # Backend container definition
-│   └── requirements.txt           # Python backend dependencies
-├── data/                          # Dataset directory
-│   ├── raw/
-│   │   └── ai4i2020.csv           # AI4I 2020 benchmark dataset (10,000 records)
-│   └── machinemitra.db            # SQLite persistence store (mounted volume)
-├── docs/                          # Documentation & Showcase Assets
-│   └── screenshots/
-│       ├── overview-dashboard.jpg # Plant overview dashboard screenshot
-│       ├── ai-failure-prediction.jpg # Prediction studio screenshot
-│       └── machinemitra-logo.png  # MachineMitra branding logo
-├── ml_pipeline/                   # Standalone Machine Learning Pipeline
-│   └── train.py                   # Model training, validation, MLflow logging & champion export
-├── models/                        # Serialized Model Artifacts
-│   ├── champion.pkl               # Production champion model pipeline & threshold
-│   └── metrics.json               # Model metrics summary for UI consumption
-├── public/                        # Static assets (favicons, manifests)
-├── src/                           # React 19 + TypeScript Source Code
-│   ├── app/                       # Application routers and layouts
-│   ├── assets/                    # Logos and illustrations
-│   ├── components/                # Reusable UI cards, tables, badges, and headers
-│   ├── context/                   # Global React state context (AppData)
-│   ├── data/                      # Demo fleet configurations
-│   ├── layouts/                   # App layout with responsive navigation sidebar
-│   ├── pages/                     # Application pages
-│   │   ├── Overview.tsx           # Fleet overview dashboard (Figure 1)
-│   │   ├── Prediction.tsx         # AI Failure Prediction studio (Figure 2)
-│   │   ├── PredictionHistory.tsx  # Historical prediction audit trail
-│   │   ├── ModelPerformance.tsx   # ML training trigger and comparative metrics
-│   │   ├── Monitoring.tsx         # Sensor drift and telemetry health monitoring
-│   │   ├── WorkOrders.tsx         # Maintenance work order tracking
-│   │   └── Machines.tsx           # Fleet inventory list & detail views
-│   ├── services/                  # API client calling FastAPI backend
-│   └── types/                     # TypeScript interfaces and type definitions
-├── docker-compose.yml             # Orchestration for Frontend, Backend, and MLflow
-├── frontend.Dockerfile            # Multi-stage production Nginx frontend container
-├── package.json                   # Node.js dependencies and build scripts
-├── vite.config.ts                 # Vite bundler configuration
-└── README.md                      # Comprehensive project documentation
-```
 
 ---
 
