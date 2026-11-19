@@ -1,0 +1,10 @@
+{
+  "description": "Help industrial teams monitor machine health, predict equipment failures, and plan maintenance with AI-powered insights that reduce downtime.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
