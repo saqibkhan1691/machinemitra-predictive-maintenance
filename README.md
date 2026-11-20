@@ -136,7 +136,7 @@ Validates schema integrity, missing values, duplicates, and class balance on the
 
 <!-- Add / replace Task A screenshot proof below -->
 <!-- Image link: docs/screenshots/task_a_data_ingestion.png -->
-![Task A - Data Ingestion and Quality Validation](docs/screenshots/task_a_data_ingestion.png)
+![Task A - Data Ingestion and Quality Validation](Screenshots/Task_A.png)
 
 ---
 
@@ -145,7 +145,7 @@ Evaluates the existing production Champion model, logging accuracy, precision, r
 
 <!-- Add / replace Task B screenshot proof below -->
 <!-- Image link: docs/screenshots/task_b_model_evaluation.png -->
-![Task B - Champion Model Evaluation](docs/screenshots/task_b_model_evaluation.png)
+![Task B - Champion Model Evaluation](Screenshots/Task_B.png)
 
 ---
 
@@ -154,7 +154,7 @@ Retrains Candidate XGBoost on the combined 20,000 industrial records, optimizes 
 
 <!-- Add / replace Task C screenshot proof below -->
 <!-- Image link: docs/screenshots/task_c_candidate_retraining.png -->
-![Task C - Candidate Retraining and MLflow](docs/screenshots/task_c_candidate_retraining.png)
+![Task C - Candidate Retraining and MLflow](Screenshots/Task_C.png)
 
 ---
 
@@ -163,7 +163,7 @@ Performs side-by-side metric comparison, validates safety gates, records metric 
 
 <!-- Add / replace Task D screenshot proof below -->
 <!-- Image link: docs/screenshots/task_d_quality_gate.png -->
-![Task D - Automated Quality Gate](docs/screenshots/task_d_quality_gate.png)
+![Task D - Automated Quality Gate](Screenshots/Task_D.png)
 
 ---
 
@@ -172,7 +172,7 @@ Confirms end-to-end execution completion in 10.06s and audits all generated JSON
 
 <!-- Add / replace Task E screenshot proof below -->
 <!-- Image link: docs/screenshots/task_e_pipeline_summary.png -->
-![Task E - Pipeline Execution Summary](docs/screenshots/task_e_pipeline_summary.png)
+![Task E - Pipeline Execution Summary](Screenshots/Task_E.png)
 
 ---
 
