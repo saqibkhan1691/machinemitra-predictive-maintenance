@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="docs/screenshots/machinemitra-logo.png" alt="MachineMitra Logo" width="180" />
-
 # MachineMitra (मशीन मित्र)
 ### Enterprise AI-Powered Predictive Maintenance & MLOps Platform
 *“Machine ki sehat, ab AI ki nazar mein!” (Machine Health, Now Under AI Watch!)*
