@@ -20,7 +20,9 @@ from ml_pipeline.quality_gate import run_quality_gate, METRIC_JUSTIFICATION
 
 @pytest.fixture
 def incoming_csv_path():
-    path = PROJECT_ROOT / 'data' / 'incoming' / 'ai4i_predictive_maintenance_modified.csv'
+    path = PROJECT_ROOT / 'data' / 'incoming' / 'new_batch_dataset.csv'
+    if not path.exists():
+        path = PROJECT_ROOT / 'data' / 'incoming' / 'ai4i_predictive_maintenance_modified.csv'
     assert path.exists(), f"Incoming CSV not found at {path}"
     return path
 

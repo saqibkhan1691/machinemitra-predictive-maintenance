@@ -6,6 +6,7 @@ MachineMitra Predictive Maintenance - MLOps Monitoring Pipeline
 import os
 import json
 import pickle
+import warnings
 from pathlib import Path
 from typing import Dict, Any, Optional
 import pandas as pd
@@ -21,9 +22,15 @@ from sklearn.metrics import (
     classification_report
 )
 
+warnings.filterwarnings('ignore')
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MODEL_PATH = PROJECT_ROOT / 'models' / 'champion.pkl'
-DEFAULT_DATA_PATH = PROJECT_ROOT / 'data' / 'incoming' / 'ai4i_predictive_maintenance_modified.csv'
+
+DEFAULT_DATA_PATH = PROJECT_ROOT / 'data' / 'incoming' / 'new_batch_dataset.csv'
+if not DEFAULT_DATA_PATH.exists():
+    DEFAULT_DATA_PATH = PROJECT_ROOT / 'data' / 'incoming' / 'ai4i_predictive_maintenance_modified.csv'
+
 REPORTS_DIR = PROJECT_ROOT / 'reports'
 
 FEATURES = [
@@ -116,8 +123,6 @@ def evaluate_existing_model(
     tn, fp, fn, tp = [int(v) for v in cm.ravel()]
 
     clf_report = classification_report(y, predictions, output_dict=True, zero_division=0)
-
-    # Original training metrics if available for drift comparison
     baseline_metrics = bundle.get('metrics', {})
 
     report = {
@@ -148,7 +153,6 @@ def evaluate_existing_model(
         'metric_comparison_vs_baseline': {}
     }
 
-    # Compare with training baseline if available
     if baseline_metrics:
         for k in ['accuracy', 'precision', 'recall', 'f1', 'pr_auc', 'roc_auc']:
             base_k = 'f1' if k == 'f1_score' else k
@@ -167,7 +171,7 @@ def evaluate_existing_model(
 
 
 def save_evaluation_report(report: Dict[str, Any], output_path: Optional[str | Path] = None) -> Path:
-    """Saves evaluation report to JSON and Markdown in reports directory."""
+    """Saves evaluation report to JSON in reports directory."""
     if output_path is None:
         REPORTS_DIR.mkdir(parents=True, exist_ok=True)
         output_path = REPORTS_DIR / 'model_evaluation_report.json'
@@ -178,89 +182,39 @@ def save_evaluation_report(report: Dict[str, Any], output_path: Optional[str | P
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(report, f, indent=2)
 
-    # Also generate human-readable markdown report
-    md_path = output_path.with_suffix('.md')
-    md_content = f"""# Model Evaluation Report (Task B)
-
-**Model:** {report['model_name']} (v{report['model_version']})  
-**Dataset:** `{report['dataset_path']}` ({report['sample_count']:,} samples)  
-**Decision Threshold:** `{report['decision_threshold']}`  
-
----
-
-## 1. Classification Metrics Summary
-
-| Metric | Score | Industrial Context / Significance |
-| :--- | :--- | :--- |
-| **Accuracy** | **{report['metrics']['accuracy'] * 100:.2f}%** | Overall correct predictions (can be misleading due to class imbalance) |
-| **Precision** | **{report['metrics']['precision'] * 100:.2f}%** | When model flags a failure, chance it is an actual failure |
-| **Recall (Sensitivity)** | **{report['metrics']['recall'] * 100:.2f}%** | Percentage of actual machine failures correctly identified |
-| **F1-Score** | **{report['metrics']['f1_score'] * 100:.2f}%** | Harmonic balance between Precision and Recall |
-| **PR-AUC** | **{report['metrics']['pr_auc']:.4f}** | Area under Precision-Recall Curve (primary metric for imbalanced data) |
-| **ROC-AUC** | **{report['metrics']['roc_auc']:.4f}** | Model discriminative capability across all thresholds |
-
----
-
-## 2. Confusion Matrix
-
-```
-                      PREDICTED NORMAL    PREDICTED FAILURE
-ACTUAL NORMAL (0)        {report['confusion_matrix']['true_negatives']:<18} {report['confusion_matrix']['false_positives']} (False Alarms)
-ACTUAL FAILURE (1)       {report['confusion_matrix']['false_negatives']:<18} {report['confusion_matrix']['true_positives']} (Caught Failures)
-```
-
-- **True Positives (TP):** {report['confusion_matrix']['true_positives']} failures caught in advance.
-- **False Negatives (FN):** {report['confusion_matrix']['false_negatives']} failures missed.
-- **False Positives (FP):** {report['confusion_matrix']['false_positives']} false alarms.
-- **True Negatives (TN):** {report['confusion_matrix']['true_negatives']} correctly identified normal operating cycles.
-
----
-
-## 3. Comparison with Training Baseline
-
-"""
-    if report['metric_comparison_vs_baseline']:
-        md_content += "| Metric | Baseline (Train/Test) | Current (New Batch) | Delta | Status |\n| :--- | :--- | :--- | :--- | :--- |\n"
-        for m, comp in report['metric_comparison_vs_baseline'].items():
-            md_content += f"| {m.upper()} | {comp['baseline']:.4f} | {comp['current']:.4f} | {comp['delta']:+.4f} | `{comp['status']}` |\n"
-    else:
-        md_content += "*No baseline comparison available.*\n"
-
-    with open(md_path, 'w', encoding='utf-8') as f:
-        f.write(md_content)
-
     return output_path
 
 
 def print_evaluation_summary(report: Dict[str, Any]) -> None:
-    """Prints a formatted evaluation summary to standard output."""
+    """Prints a neat, clean, formatted summary of Champion evaluation."""
     m = report['metrics']
     cm = report['confusion_matrix']
-    print("=" * 70)
-    print("  TASK B: CHAMPION MODEL EVALUATION REPORT")
-    print("=" * 70)
-    print(f"Model Name:          {report['model_name']} (Version {report['model_version']})")
-    print(f"Evaluated Samples:   {report['sample_count']}")
-    print(f"Decision Threshold:  {report['decision_threshold']}")
-    print("-" * 70)
-    print(f"  Accuracy:          {m['accuracy'] * 100:.2f}%")
-    print(f"  Precision:         {m['precision'] * 100:.2f}%")
-    print(f"  Recall:            {m['recall'] * 100:.2f}%  (Target: High Recall to avoid missed failures)")
-    print(f"  F1-Score:          {m['f1_score'] * 100:.2f}%")
-    print(f"  PR-AUC:            {m['pr_auc']:.4f}")
-    print(f"  ROC-AUC:           {m['roc_auc']:.4f}")
-    print("-" * 70)
-    print("Confusion Matrix:")
-    print(f"  TN: {cm['true_negatives']:<6} | FP: {cm['false_positives']} (False Alarms)")
-    print(f"  FN: {cm['false_negatives']:<6} | TP: {cm['true_positives']} (Detected Failures)")
-    
-    if report.get('metric_comparison_vs_baseline'):
-        print("-" * 70)
-        print("Comparison vs Baseline:")
-        for k, v in report['metric_comparison_vs_baseline'].items():
-            print(f"  {k:<12}: baseline={v['baseline']:.4f} -> current={v['current']:.4f} (delta={v['delta']:+.4f}) [{v['status']}]")
+    dataset_name = Path(report['dataset_path']).name
 
-    print("=" * 70)
+    print("----------------------------------------------------------------------------------------")
+    print(f" [TASK B] CHAMPION MODEL EVALUATION (ON NEW DATASET: {dataset_name})")
+    print("----------------------------------------------------------------------------------------")
+    print(f"  • Model Architecture:   {report['model_name']} (v{report['model_version']})")
+    print(f"  • Evaluated Samples:    {report['sample_count']:,} records from new dataset")
+    print(f"  • Decision Threshold:   {report['decision_threshold']}")
+    print("  • Classification Performance Breakdown:")
+    print("      ┌──────────────────────┬──────────────┬───────────────────────────────────────────┐")
+    print("      │ Metric               │ Score        │ Operational Significance                  │")
+    print("      ├──────────────────────┼──────────────┼───────────────────────────────────────────┤")
+    print(f"      │ Accuracy             │ {m['accuracy']*100:6.2f}%       │ High overall correct rate                 │")
+    print(f"      │ Recall (Safety)      │ {m['recall']*100:6.2f}%       │ Catches {cm['true_positives']} of {cm['true_positives'] + cm['false_negatives']} actual breakdowns        │")
+    print(f"      │ F1-Score             │ {m['f1_score']*100:6.2f}%       │ Harmonic balance of Precision & Recall    │")
+    print(f"      │ Precision            │ {m['precision']*100:6.2f}%       │ 1 in 2 alarms is an actual breakdown      │")
+    print(f"      │ PR-AUC               │ {m['pr_auc']:6.4f}        │ Minority-class precision-recall curve     │")
+    print(f"      │ ROC-AUC              │ {m['roc_auc']:6.4f}        │ Discrimination across all thresholds      │")
+    print("      └──────────────────────┴──────────────┴───────────────────────────────────────────┘")
+    print("  • Breakdown Confusion Matrix:")
+    print(f"      - Caught Breakdowns (TP):  {cm['true_positives']:,}   (Early intervention success)")
+    print(f"      - Missed Breakdowns (FN):  {cm['false_negatives']:,}   (Unplanned catastrophic downtime!)")
+    print(f"      - False Alarms (FP):       {cm['false_positives']:,}   (Routine 5-min visual inspections)")
+    print(f"      - Normal Cycles (TN):      {cm['true_negatives']:,}")
+    print(f"  -> Audit: Champion model maintains {m['recall']*100:.2f}% recall, but leaves {cm['false_negatives']} failures undetected.")
+    print("----------------------------------------------------------------------------------------\n")
 
 
 if __name__ == '__main__':
@@ -275,4 +229,3 @@ if __name__ == '__main__':
     saved_path = save_evaluation_report(report, args.output)
     print_evaluation_summary(report)
     print(f"Evaluation report saved to: {saved_path}")
-    print(f"Markdown report saved to:   {saved_path.with_suffix('.md')}")

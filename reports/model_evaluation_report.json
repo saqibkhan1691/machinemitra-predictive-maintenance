@@ -3,7 +3,7 @@
   "model_name": "XGBoost",
   "model_version": "1",
   "model_path": "D:\\AiOPS\\machinemitra-predictive-maintenance\\models\\champion.pkl",
-  "dataset_path": "D:\\AiOPS\\machinemitra-predictive-maintenance\\data\\incoming\\ai4i_predictive_maintenance_modified.csv",
+  "dataset_path": "D:\\AiOPS\\machinemitra-predictive-maintenance\\data\\incoming\\new_batch_dataset.csv",
   "sample_count": 10000,
   "decision_threshold": 0.3088,
   "metrics": {

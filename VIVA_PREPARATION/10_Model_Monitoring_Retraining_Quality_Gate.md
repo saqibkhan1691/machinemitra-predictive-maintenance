@@ -32,7 +32,8 @@ flowchart TD
 ## 2. Assessment Task Breakdown & Execution Results
 
 ### Task A — Prepare New Data (`ml_pipeline/data_validation.py`)
-- **Dataset Ingested:** `data/incoming/ai4i_predictive_maintenance_modified.csv`
+- **Dataset Ingested:** `data/incoming/new_batch_dataset.csv` (10,000 records)
+- **Baseline Training Data:** `data/baseline/baseline_dataset.csv` (10,000 records)
 - **Dataset Dimensions:** 10,000 rows × 16 columns.
 - **Schema Validation:**
   - Required Features: `Type`, `Air temperature [K]`, `Process temperature [K]`, `Rotational speed [rpm]`, `Torque [Nm]`, `Tool wear [min]` (All present).

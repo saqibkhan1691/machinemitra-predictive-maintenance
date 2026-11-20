@@ -487,7 +487,7 @@ MachineMitra includes an automated model monitoring, retraining, and quality-gat
 ### 5-Stage Assessment Workflow
 
 1. **Task A — Ingest & Validate New Batch (`ml_pipeline/data_validation.py`):**
-   - Ingests `data/incoming/ai4i_predictive_maintenance_modified.csv` (10,000 records).
+   - Ingests `data/incoming/new_batch_dataset.csv` (10,000 records).
    - Validates schema against 6 required features (`Type`, `Air temperature [K]`, `Process temperature [K]`, `Rotational speed [rpm]`, `Torque [Nm]`, `Tool wear [min]`).
    - Detects new sensor channels (`Vibration [mm/s]`, `Humidity [%]`).
    - Audits missing values (0 nulls) and duplicate records (0 duplicates).
@@ -498,10 +498,10 @@ MachineMitra includes an automated model monitoring, retraining, and quality-gat
    - Evaluates production Champion (`models/champion.pkl`, XGBoost v1 at threshold `0.3088`).
    - Computes: Accuracy (96.64%), Precision (50.28%), Recall (80.83%), F1-Score (61.99%), PR-AUC (0.7324), ROC-AUC (0.9785).
    - Intercepts 274 of 339 breakdowns; misses 65 breakdowns.
-   - Produces `reports/model_evaluation_report.json` and `reports/model_evaluation_report.md`.
+   - Produces `reports/model_evaluation_report.json`.
 
 3. **Task C — Retrain Candidate Model (`ml_pipeline/retrain.py`):**
-   - Synthesizes 20,000 samples (10k baseline raw + 10k incoming batch).
+   - Synthesizes 20,000 samples (`data/baseline/baseline_dataset.csv` 10k + `data/incoming/new_batch_dataset.csv` 10k).
    - Trains Candidate XGBoost with `scale_pos_weight=28.5` and $F_2$-score threshold optimization (`0.5022`).
    - Logs metrics, parameters, and pipeline artifact to MLflow (`Candidate Retraining (Combined Data)`).
    - Saves candidate artifact separately to `models/candidate.pkl` without overwriting champion.
@@ -511,7 +511,7 @@ MachineMitra includes an automated model monitoring, retraining, and quality-gat
    - **Metric Justification:** Recall and F1-Score are prioritized over Accuracy because undetected breakdowns (False Negatives) cause costly downtime, while naive zero-rule models achieve 96.6% accuracy with 0% recall.
    - Decision Rules: Candidate Recall >= Champion Recall - 0.01; Candidate F1 >= Champion F1.
    - Result: `ELIGIBLE_FOR_PROMOTION` (Recall +15.04% to 95.87%, F1 +11.29% to 73.28%, reducing missed breakdowns from 65 to 14).
-   - Overwrite Safeguard: Champion is preserved (`CHAMPION_RETAINED`) unless `--promote` is explicitly supplied. Produces `reports/quality_gate_decision.json` and `.md`.
+   - Overwrite Safeguard: Champion is preserved (`CHAMPION_RETAINED`) unless `--promote` is explicitly supplied. Produces `reports/quality_gate_decision.json`.
 
 5. **Task E — Execution & Orchestration:**
    - Run full pipeline:

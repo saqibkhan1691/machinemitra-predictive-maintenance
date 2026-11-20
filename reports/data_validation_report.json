@@ -1,7 +1,7 @@
 {
   "status": "PASSED",
   "is_valid": true,
-  "dataset_path": "D:\\AiOPS\\machinemitra-predictive-maintenance\\data\\incoming\\ai4i_predictive_maintenance_modified.csv",
+  "dataset_path": "D:\\AiOPS\\machinemitra-predictive-maintenance\\data\\incoming\\new_batch_dataset.csv",
   "total_rows": 10000,
   "total_columns": 16,
   "columns": [

@@ -3,7 +3,7 @@
   "decision": "ELIGIBLE_FOR_PROMOTION",
   "eligible_for_promotion": true,
   "promotion_action_taken": "CHAMPION_RETAINED (Promotion flag --promote not set; awaiting explicit deployment)",
-  "timestamp": "2026-11-20T06:53:55Z",
+  "timestamp": "2026-11-20T07:36:26Z",
   "champion_model": {
     "name": "XGBoost",
     "version": "1",
@@ -84,8 +84,8 @@
     }
   },
   "metric_justification": "In industrial predictive maintenance (MachineMitra), the operational objective is zero unplanned machine downtime. Missing a machine failure (False Negative) leads to catastrophic line stoppage, costly emergency repairs, and safety risks. Conversely, a false alarm (False Positive) only triggers a preventive inspection. Because the failure class is extremely rare (3.39% in the incoming batch), standard Accuracy is misleading\u2014a naive classifier predicting 'Normal' on all cycles yields 96.61% accuracy while catching 0% of failures. Therefore, Recall (Sensitivity) is selected as the primary safety metric to maximize failure capture, paired with F1-Score to ensure that Precision is not sacrificed, and PR-AUC to assess threshold-independent performance on highly imbalanced data.",
-  "decision_summary": "Candidate model outperformed Champion. Recall improved by +15.04%, F1-score improved by +11.29%, preventing 51 missed failures.",
-  "evaluated_dataset": "D:\\AiOPS\\machinemitra-predictive-maintenance\\data\\incoming\\ai4i_predictive_maintenance_modified.csv",
+  "decision_summary": "Candidate model outperformed Champion. Recall improved by +15.04%, F1-score improved by +11.29%, preventing 51 missed breakdowns.",
+  "evaluated_dataset": "D:\\AiOPS\\machinemitra-predictive-maintenance\\data\\incoming\\new_batch_dataset.csv",
   "sample_count": 10000,
   "champion_backup_created": null
 }
