@@ -1,10 +1,21 @@
 import os, sqlite3, json
 from pathlib import Path
-DB_PATH = os.getenv('APP_DB_PATH', '/app/data/machinemitra.db')
+
+def _get_db_path() -> Path:
+    env_path = os.getenv('APP_DB_PATH')
+    if env_path:
+        return Path(env_path)
+    if os.name != 'nt' and Path('/app/data').exists():
+        return Path('/app/data/machinemitra.db')
+    project_root = Path(__file__).resolve().parent.parent.parent
+    return project_root / 'data' / 'machinemitra.db'
+
+DB_PATH = _get_db_path()
 
 def connect():
-    Path(DB_PATH).parent.mkdir(parents=True, exist_ok=True)
-    con = sqlite3.connect(DB_PATH)
+    db_file = Path(DB_PATH)
+    db_file.parent.mkdir(parents=True, exist_ok=True)
+    con = sqlite3.connect(str(db_file))
     con.row_factory = sqlite3.Row
     return con
 

@@ -1,6 +1,7 @@
 import os, json, uuid, pickle, subprocess, sys
 from pathlib import Path
 from datetime import datetime, timezone
+from contextlib import asynccontextmanager
 import numpy as np
 import pandas as pd
 from fastapi import FastAPI, HTTPException, UploadFile, File, BackgroundTasks
@@ -14,11 +15,20 @@ REPORTS_DIR = Path(os.getenv('REPORTS_DIR', '/app/reports' if Path('/app/reports
 MODEL_PATH = MODEL_DIR / 'champion.pkl'
 CANDIDATE_PATH = MODEL_DIR / 'candidate.pkl'
 FEATURES = ['Type','Air temperature [K]','Process temperature [K]','Rotational speed [rpm]','Torque [Nm]','Tool wear [min]']
-app = FastAPI(title='MachineMitra API', version='1.0.0', description='Predictive maintenance and MLOps API')
-app.add_middleware(CORSMiddleware, allow_origins=os.getenv('CORS_ORIGINS','http://localhost:8080,http://localhost:5173').split(','), allow_credentials=True, allow_methods=['*'], allow_headers=['*'])
 
-@app.on_event('startup')
-def startup(): init_db()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+app = FastAPI(title='MachineMitra API', version='1.0.0', description='Predictive maintenance and MLOps API', lifespan=lifespan)
+cors_origins = [
+    'http://localhost:8080', 'http://localhost:5173', 'http://localhost:8443', 'http://localhost:3000',
+    'http://127.0.0.1:8080', 'http://127.0.0.1:5173', 'http://127.0.0.1:8443', 'http://127.0.0.1:3000'
+]
+if os.getenv('CORS_ORIGINS'):
+    cors_origins.extend([o.strip() for o in os.getenv('CORS_ORIGINS').split(',') if o.strip()])
+app.add_middleware(CORSMiddleware, allow_origins=cors_origins, allow_origin_regex=r'https?://(localhost|127\.0\.0\.1)(:\d+)?', allow_credentials=True, allow_methods=['*'], allow_headers=['*'])
 
 @app.get('/api/health')
 def health():

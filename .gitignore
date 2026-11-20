@@ -17,3 +17,6 @@ frontend/node_modules/
 dist/
 
 *.pem
+
+*.tsbuildinfo
+frontend/dist/
