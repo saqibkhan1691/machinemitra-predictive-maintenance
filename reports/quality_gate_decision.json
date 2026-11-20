@@ -3,7 +3,7 @@
   "decision": "ELIGIBLE_FOR_PROMOTION",
   "eligible_for_promotion": true,
   "promotion_action_taken": "CHAMPION_RETAINED (Promotion flag --promote not set; awaiting explicit deployment)",
-  "timestamp": "2026-11-20T08:43:34Z",
+  "timestamp": "2026-11-20T08:51:19Z",
   "champion_model": {
     "name": "Candidate_XGBoost",
     "version": "2.0-candidate",

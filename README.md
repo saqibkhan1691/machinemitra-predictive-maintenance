@@ -20,6 +20,14 @@ Extend the existing ML system with an automated model monitoring, evaluation, re
 - Executes an automated quality gate comparing Champion and Candidate performance.
 - Prevents unverified overwrites of the production model artifact while logging auditable decisions.
 
+### Assessment Completion Summary (What Was Done)
+To complete the assessment requirements, the following end-to-end workflow was implemented and executed:
+1. **New Telemetry Ingestion (Task A):** Ingested a newly arrived operational batch of 10,000 records (`data/incoming/new_batch_dataset.csv`). Verified schema conformity for the 6 physical features, verified zero missing values (0.00%) and zero duplicates, and audited the 28.5:1 class imbalance (96.61% normal vs. 3.39% failure).
+2. **Deployed Model Evaluation (Task B):** Scored the existing production Champion model (`models/champion.pkl`) against the new batch. Identified that while overall accuracy was 96.64%, the model missed 65 machine breakdowns (recall: 80.83%), revealing operational vulnerability.
+3. **Candidate Model Retraining (Task C):** Combined the 10,000 historical baseline records with the 10,000 new batch records into a 20,000-sample pool. Retrained a Candidate XGBoost model with class imbalance weighting (`scale_pos_weight = 28.5`), calibrated the decision threshold to 0.5022 based on validation F2-score to penalize missed failures, tracked the run in MLflow (Run ID: `c9081417f63844868f503bc243dc02ff`), and saved the artifact separately to `models/candidate.pkl`.
+4. **Automated Quality Gate (Task D):** Compared Champion v1 and Candidate v2 side-by-side on identical evaluation data. Candidate v2 improved recall by +15.04% (preventing 51 missed breakdowns) and F1-score by +11.29%. The gate confirmed promotion eligibility (`ELIGIBLE_FOR_PROMOTION`) while enforcing a production safeguard (`CHAMPION_RETAINED`) preventing automatic artifact overwrites without explicit authorization.
+5. **Demonstration & Artifact Auditing (Task E):** Automated the complete lifecycle via `ml_pipeline/run_monitoring_pipeline.py` (runtime: 10.06s), generated auditable JSON and Markdown reports in `reports/`, and verified pipeline integrity with automated Pytest tests.
+
 ---
 
 ## 2. Dataset Evolution: Baseline vs. Incoming Batch
@@ -115,11 +123,19 @@ Therefore:
 
 ## 5. Execution Proof and Evaluation Screenshots
 
-The terminal execution outputs verifying each assessment task are documented below:
+<!-- 
+================================================================================
+SCREENSHOT ATTACHMENT GUIDE:
+Place your proof screenshot files inside 'docs/screenshots/', or update the 
+markdown image links below with your file path or hosted image URL.
+================================================================================
+-->
 
 ### Proof 1: Task A - Data Ingestion and Quality Validation
 Validates schema integrity, missing values, duplicates, and class balance on the new incoming batch.
 
+<!-- Add / replace Task A screenshot proof below -->
+<!-- Image link: docs/screenshots/task_a_data_ingestion.png -->
 ![Task A - Data Ingestion and Quality Validation](docs/screenshots/task_a_data_ingestion.png)
 
 ---
@@ -127,6 +143,8 @@ Validates schema integrity, missing values, duplicates, and class balance on the
 ### Proof 2: Task B - Champion Model Evaluation on New Batch
 Evaluates the existing production Champion model, logging accuracy, precision, recall, F1, PR-AUC, and the confusion matrix.
 
+<!-- Add / replace Task B screenshot proof below -->
+<!-- Image link: docs/screenshots/task_b_model_evaluation.png -->
 ![Task B - Champion Model Evaluation](docs/screenshots/task_b_model_evaluation.png)
 
 ---
@@ -134,6 +152,8 @@ Evaluates the existing production Champion model, logging accuracy, precision, r
 ### Proof 3: Task C - Candidate Model Retraining and MLflow Tracking
 Retrains Candidate XGBoost on the combined 20,000 industrial records, optimizes threshold to 0.5022, logs to MLflow, and saves `models/candidate.pkl`.
 
+<!-- Add / replace Task C screenshot proof below -->
+<!-- Image link: docs/screenshots/task_c_candidate_retraining.png -->
 ![Task C - Candidate Retraining and MLflow](docs/screenshots/task_c_candidate_retraining.png)
 
 ---
@@ -141,6 +161,8 @@ Retrains Candidate XGBoost on the combined 20,000 industrial records, optimizes 
 ### Proof 4: Task D - Automated Quality Gate and Promotion Decision
 Performs side-by-side metric comparison, validates safety gates, records metric justification, and prevents automatic production overwrite.
 
+<!-- Add / replace Task D screenshot proof below -->
+<!-- Image link: docs/screenshots/task_d_quality_gate.png -->
 ![Task D - Automated Quality Gate](docs/screenshots/task_d_quality_gate.png)
 
 ---
@@ -148,6 +170,8 @@ Performs side-by-side metric comparison, validates safety gates, records metric 
 ### Proof 5: Task E - Pipeline Execution Summary and Artifact Audit
 Confirms end-to-end execution completion in 10.06s and audits all generated JSON/Markdown reports and model artifacts.
 
+<!-- Add / replace Task E screenshot proof below -->
+<!-- Image link: docs/screenshots/task_e_pipeline_summary.png -->
 ![Task E - Pipeline Execution Summary](docs/screenshots/task_e_pipeline_summary.png)
 
 ---
