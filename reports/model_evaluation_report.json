@@ -1,0 +1,117 @@
+{
+  "evaluation_type": "Task B \u2014 Champion Model Evaluation on New Batch",
+  "model_name": "XGBoost",
+  "model_version": "1",
+  "model_path": "D:\\AiOPS\\machinemitra-predictive-maintenance\\models\\champion.pkl",
+  "dataset_path": "D:\\AiOPS\\machinemitra-predictive-maintenance\\data\\incoming\\new_batch_dataset.csv",
+  "sample_count": 10000,
+  "decision_threshold": 0.3088,
+  "metrics": {
+    "accuracy": 0.9664,
+    "precision": 0.5028,
+    "recall": 0.8083,
+    "f1_score": 0.6199,
+    "pr_auc": 0.7324,
+    "roc_auc": 0.9785
+  },
+  "confusion_matrix": {
+    "matrix": [
+      [
+        9390,
+        271
+      ],
+      [
+        65,
+        274
+      ]
+    ],
+    "true_negatives": 9390,
+    "false_positives": 271,
+    "false_negatives": 65,
+    "true_positives": 274
+  },
+  "classification_report": {
+    "0": {
+      "precision": 0.9931253305129562,
+      "recall": 0.9719490735948659,
+      "f1-score": 0.9824231010671689,
+      "support": 9661.0
+    },
+    "1": {
+      "precision": 0.5027522935779817,
+      "recall": 0.8082595870206489,
+      "f1-score": 0.6199095022624435,
+      "support": 339.0
+    },
+    "accuracy": 0.9664,
+    "macro avg": {
+      "precision": 0.7479388120454689,
+      "recall": 0.8901043303077574,
+      "f1-score": 0.8011663016648062,
+      "support": 10000.0
+    },
+    "weighted avg": {
+      "precision": 0.9765016845608605,
+      "recall": 0.9664,
+      "f1-score": 0.9701338900676887,
+      "support": 10000.0
+    }
+  },
+  "baseline_metrics": {
+    "accuracy": 0.9653333333333334,
+    "precision": 0.4939759036144578,
+    "recall": 0.803921568627451,
+    "f1": 0.6119402985074627,
+    "pr_auc": 0.7799811947566522,
+    "roc_auc": 0.9708250449938429,
+    "threshold": 0.30884313583374023,
+    "confusion_matrix": [
+      [
+        1407,
+        42
+      ],
+      [
+        10,
+        41
+      ]
+    ]
+  },
+  "metric_comparison_vs_baseline": {
+    "accuracy": {
+      "baseline": 0.9653,
+      "current": 0.9664,
+      "delta": 0.0011,
+      "status": "IMPROVED"
+    },
+    "precision": {
+      "baseline": 0.494,
+      "current": 0.5028,
+      "delta": 0.0088,
+      "status": "IMPROVED"
+    },
+    "recall": {
+      "baseline": 0.8039,
+      "current": 0.8083,
+      "delta": 0.0044,
+      "status": "IMPROVED"
+    },
+    "f1": {
+      "baseline": 0.6119,
+      "current": 0.6199,
+      "delta": 0.008,
+      "status": "IMPROVED"
+    },
+    "pr_auc": {
+      "baseline": 0.78,
+      "current": 0.7324,
+      "delta": -0.0476,
+      "status": "STABLE"
+    },
+    "roc_auc": {
+      "baseline": 0.9708,
+      "current": 0.9785,
+      "delta": 0.0077,
+      "status": "IMPROVED"
+    }
+  }
+}
