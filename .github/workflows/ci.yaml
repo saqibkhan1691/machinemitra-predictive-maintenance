@@ -1,4 +1,3 @@
-@'
 name: MachineMitra CI
 
 on:
@@ -24,4 +23,3 @@ jobs:
 
       - name: CI Success
         run: echo "MachineMitra CI completed successfully!"
-'@ | Set-Content -Path .github/workflows/ci.yaml -Encoding utf8
