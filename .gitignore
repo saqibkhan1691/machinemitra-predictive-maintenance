@@ -11,9 +11,7 @@ models/*.pkl
 data/*.db
 mlflow-data/
 mlruns/
-
-node_modules/
-frontend/node_modules/
-dist/
-
-*.pem
+.venv/
+venv/
+*.tsbuildinfo
+data/training_status.json
