@@ -1,33 +1,27 @@
+@'
+name: MachineMitra CI
 
-services:
-  api:
-    build: .
-    container_name: machinemitra-api
-    restart: unless-stopped
-    ports:
-      - "8000:8000"
-    environment:
-      MODEL_DIR: /app/models
-      PROJECT_DATA_DIR: /app/data
-      DATASET_PATH: /app/data/raw/ai4i2020.csv
-      MLFLOW_TRACKING_URI: http://mlflow:5000
-    volumes:
-      - ./models:/app/models
-      - ./data:/app/data
-    depends_on:
-      - mlflow
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
-  mlflow:
-    image: ghcr.io/mlflow/mlflow:latest
-    container_name: machinemitra-mlflow
-    restart: unless-stopped
-    ports:
-      - "5000:5000"
-    command: >
-      mlflow server
-      --host 0.0.0.0
-      --port 5000
-      --backend-store-uri sqlite:////mlflow/mlflow.db
-      --default-artifact-root /mlflow/artifacts
-    volumes:
-      - ./mlflow-data:/mlflow
+jobs:
+  build:
+    name: Build and Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose
+        run: docker compose config
+
+      - name: Build Docker Images
+        run: docker compose build
+
+      - name: CI Success
+        run: echo "MachineMitra CI completed successfully!"
+'@ | Set-Content -Path .github/workflows/ci.yaml -Encoding utf8
