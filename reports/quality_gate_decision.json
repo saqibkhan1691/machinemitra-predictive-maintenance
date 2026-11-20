@@ -1,0 +1,91 @@
+{
+  "task": "Task D \u2014 Quality Gate Decision Record",
+  "decision": "ELIGIBLE_FOR_PROMOTION",
+  "eligible_for_promotion": true,
+  "promotion_action_taken": "CHAMPION_RETAINED (Promotion flag --promote not set; awaiting explicit deployment)",
+  "timestamp": "2026-11-20T06:53:55Z",
+  "champion_model": {
+    "name": "XGBoost",
+    "version": "1",
+    "threshold": 0.30884313583374023,
+    "metrics": {
+      "accuracy": 0.9664,
+      "precision": 0.5028,
+      "recall": 0.8083,
+      "f1": 0.6199,
+      "pr_auc": 0.7324,
+      "roc_auc": 0.9785,
+      "threshold": 0.3088
+    },
+    "confusion_matrix": {
+      "tn": 9390,
+      "fp": 271,
+      "fn": 65,
+      "tp": 274
+    }
+  },
+  "candidate_model": {
+    "name": "Candidate_XGBoost",
+    "version": "2.0-candidate",
+    "threshold": 0.5021905899047852,
+    "metrics": {
+      "accuracy": 0.9763,
+      "precision": 0.5931,
+      "recall": 0.9587,
+      "f1": 0.7328,
+      "pr_auc": 0.9039,
+      "roc_auc": 0.9924,
+      "threshold": 0.5022
+    },
+    "confusion_matrix": {
+      "tn": 9438,
+      "fp": 223,
+      "fn": 14,
+      "tp": 325
+    }
+  },
+  "metric_deltas": {
+    "recall": 0.1504,
+    "f1": 0.1129,
+    "pr_auc": 0.1715,
+    "accuracy": 0.0099,
+    "precision": 0.0903,
+    "roc_auc": 0.014,
+    "fn_reduction": 51
+  },
+  "criteria_evaluation": {
+    "recall_not_degraded": {
+      "rule": "Candidate Recall >= Champion Recall - 0.01",
+      "champion": 0.8083,
+      "candidate": 0.9587,
+      "delta": 0.1504,
+      "passed": true
+    },
+    "f1_score_improved": {
+      "rule": "Candidate F1-Score >= Champion F1-Score",
+      "champion": 0.6199,
+      "candidate": 0.7328,
+      "delta": 0.1129,
+      "passed": true
+    },
+    "pr_auc_stable": {
+      "rule": "Candidate PR-AUC >= Champion PR-AUC - 0.05",
+      "champion": 0.7324,
+      "candidate": 0.9039,
+      "delta": 0.1715,
+      "passed": true
+    },
+    "false_negatives_reduced_or_equal": {
+      "rule": "Candidate Missed Failures (FN) <= Champion Missed Failures (FN)",
+      "champion_fn": 65,
+      "candidate_fn": 14,
+      "failures_prevented": 51,
+      "passed": true
+    }
+  },
+  "metric_justification": "In industrial predictive maintenance (MachineMitra), the operational objective is zero unplanned machine downtime. Missing a machine failure (False Negative) leads to catastrophic line stoppage, costly emergency repairs, and safety risks. Conversely, a false alarm (False Positive) only triggers a preventive inspection. Because the failure class is extremely rare (3.39% in the incoming batch), standard Accuracy is misleading\u2014a naive classifier predicting 'Normal' on all cycles yields 96.61% accuracy while catching 0% of failures. Therefore, Recall (Sensitivity) is selected as the primary safety metric to maximize failure capture, paired with F1-Score to ensure that Precision is not sacrificed, and PR-AUC to assess threshold-independent performance on highly imbalanced data.",
+  "decision_summary": "Candidate model outperformed Champion. Recall improved by +15.04%, F1-score improved by +11.29%, preventing 51 missed failures.",
+  "evaluated_dataset": "D:\\AiOPS\\machinemitra-predictive-maintenance\\data\\incoming\\ai4i_predictive_maintenance_modified.csv",
+  "sample_count": 10000,
+  "champion_backup_created": null
+}

@@ -1,0 +1,140 @@
+{
+  "status": "PASSED",
+  "is_valid": true,
+  "dataset_path": "D:\\AiOPS\\machinemitra-predictive-maintenance\\data\\incoming\\ai4i_predictive_maintenance_modified.csv",
+  "total_rows": 10000,
+  "total_columns": 16,
+  "columns": [
+    "UDI",
+    "Product ID",
+    "Type",
+    "Air temperature [K]",
+    "Process temperature [K]",
+    "Rotational speed [rpm]",
+    "Torque [Nm]",
+    "Tool wear [min]",
+    "Vibration [mm/s]",
+    "Humidity [%]",
+    "Machine failure",
+    "TWF",
+    "HDF",
+    "PWF",
+    "OSF",
+    "RNF"
+  ],
+  "required_features": [
+    "Type",
+    "Air temperature [K]",
+    "Process temperature [K]",
+    "Rotational speed [rpm]",
+    "Torque [Nm]",
+    "Tool wear [min]"
+  ],
+  "extra_columns_detected": [
+    "UDI",
+    "Product ID",
+    "Vibration [mm/s]",
+    "Humidity [%]",
+    "TWF",
+    "HDF",
+    "PWF",
+    "OSF",
+    "RNF"
+  ],
+  "missing_values": {
+    "null_counts": {
+      "UDI": 0,
+      "Product ID": 0,
+      "Type": 0,
+      "Air temperature [K]": 0,
+      "Process temperature [K]": 0,
+      "Rotational speed [rpm]": 0,
+      "Torque [Nm]": 0,
+      "Tool wear [min]": 0,
+      "Vibration [mm/s]": 0,
+      "Humidity [%]": 0,
+      "Machine failure": 0,
+      "TWF": 0,
+      "HDF": 0,
+      "PWF": 0,
+      "OSF": 0,
+      "RNF": 0
+    },
+    "null_percentages": {
+      "UDI": 0.0,
+      "Product ID": 0.0,
+      "Type": 0.0,
+      "Air temperature [K]": 0.0,
+      "Process temperature [K]": 0.0,
+      "Rotational speed [rpm]": 0.0,
+      "Torque [Nm]": 0.0,
+      "Tool wear [min]": 0.0,
+      "Vibration [mm/s]": 0.0,
+      "Humidity [%]": 0.0,
+      "Machine failure": 0.0,
+      "TWF": 0.0,
+      "HDF": 0.0,
+      "PWF": 0.0,
+      "OSF": 0.0,
+      "RNF": 0.0
+    },
+    "total_nulls_in_required": 0
+  },
+  "duplicates": {
+    "full_row_duplicates": 0,
+    "feature_duplicates": 0,
+    "id_duplicates": {
+      "UDI": 0,
+      "Product ID": 0
+    }
+  },
+  "target_distribution": {
+    "target_column": "Machine failure",
+    "class_counts": {
+      "0": 9661,
+      "1": 339
+    },
+    "class_percentages": {
+      "0": 96.61,
+      "1": 3.39
+    },
+    "imbalance_ratio": "28.5:1 (Normal:Failure)",
+    "total_failures": 339,
+    "total_normal": 9661,
+    "failure_rate_percent": 3.39
+  },
+  "sensor_ranges": {
+    "Air temperature [K]": {
+      "min": 294.27,
+      "max": 305.04,
+      "mean": 300.01,
+      "std": 2.03
+    },
+    "Process temperature [K]": {
+      "min": 305.23,
+      "max": 314.55,
+      "mean": 310.01,
+      "std": 1.53
+    },
+    "Rotational speed [rpm]": {
+      "min": 1185.0,
+      "max": 2884.0,
+      "mean": 1538.79,
+      "std": 180.24
+    },
+    "Torque [Nm]": {
+      "min": 3.9,
+      "max": 78.8,
+      "mean": 39.98,
+      "std": 10.04
+    },
+    "Tool wear [min]": {
+      "min": 0.0,
+      "max": 257.0,
+      "mean": 107.98,
+      "std": 63.73
+    }
+  },
+  "warnings": [],
+  "errors": []
+}

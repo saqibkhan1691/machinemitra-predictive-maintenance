@@ -8,9 +8,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from .db import init_db, connect
 from .schemas import SensorInput, WorkOrderInput
 
-ROOT = Path(os.getenv('PROJECT_DATA_DIR','/app/data'))
-MODEL_DIR = Path(os.getenv('MODEL_DIR','/app/models'))
+ROOT = Path(os.getenv('PROJECT_DATA_DIR', '/app/data' if Path('/app/data').exists() else str(Path(__file__).resolve().parent.parent.parent / 'data')))
+MODEL_DIR = Path(os.getenv('MODEL_DIR', '/app/models' if Path('/app/models').exists() else str(Path(__file__).resolve().parent.parent.parent / 'models')))
+REPORTS_DIR = Path(os.getenv('REPORTS_DIR', '/app/reports' if Path('/app/reports').exists() else str(Path(__file__).resolve().parent.parent.parent / 'reports')))
 MODEL_PATH = MODEL_DIR / 'champion.pkl'
+CANDIDATE_PATH = MODEL_DIR / 'candidate.pkl'
 FEATURES = ['Type','Air temperature [K]','Process temperature [K]','Rotational speed [rpm]','Torque [Nm]','Tool wear [min]']
 app = FastAPI(title='MachineMitra API', version='1.0.0', description='Predictive maintenance and MLOps API')
 app.add_middleware(CORSMiddleware, allow_origins=os.getenv('CORS_ORIGINS','http://localhost:8080,http://localhost:5173').split(','), allow_credentials=True, allow_methods=['*'], allow_headers=['*'])
@@ -131,3 +133,76 @@ def update_work_order(work_id:str,status:str):
         cur=con.execute('UPDATE work_orders SET status=? WHERE id=?',(status,work_id))
         if not cur.rowcount: raise HTTPException(404,'Work order not found')
     return {'updated':True,'id':work_id,'status':status}
+
+@app.get('/api/monitoring/data-validation')
+def get_data_validation_report():
+    report_file = REPORTS_DIR / 'data_validation_report.json'
+    if not report_file.exists():
+        raise HTTPException(404, 'No data validation report found. Run monitoring pipeline.')
+    return json.loads(report_file.read_text(encoding='utf-8'))
+
+@app.get('/api/monitoring/model-evaluation')
+def get_model_evaluation_report():
+    report_file = REPORTS_DIR / 'model_evaluation_report.json'
+    if not report_file.exists():
+        raise HTTPException(404, 'No model evaluation report found. Run monitoring pipeline.')
+    return json.loads(report_file.read_text(encoding='utf-8'))
+
+@app.get('/api/monitoring/quality-gate')
+def get_quality_gate_decision():
+    report_file = REPORTS_DIR / 'quality_gate_decision.json'
+    if not report_file.exists():
+        raise HTTPException(404, 'No quality gate decision record found. Run monitoring pipeline.')
+    return json.loads(report_file.read_text(encoding='utf-8'))
+
+@app.get('/api/model/candidate')
+def get_candidate_status():
+    if not CANDIDATE_PATH.exists():
+        return {'trained': False, 'message': 'No candidate model available.'}
+    try:
+        with CANDIDATE_PATH.open('rb') as f:
+            bundle = pickle.load(f)
+        return {
+            'trained': True,
+            'model': bundle.get('model_name'),
+            'version': bundle.get('version', '2.0-candidate'),
+            'threshold': bundle.get('threshold', 0.5),
+            'metrics': bundle.get('metrics', {}),
+            'incoming_metrics': bundle.get('incoming_metrics', {}),
+            'dataset_info': bundle.get('dataset_info', {}),
+            'mlflow_run_id': bundle.get('mlflow_run_id')
+        }
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
+@app.post('/api/monitoring/run-pipeline')
+def trigger_monitoring_pipeline(background_tasks: BackgroundTasks):
+    status_file = ROOT / 'monitoring_status.json'
+    status_file.parent.mkdir(parents=True, exist_ok=True)
+    status_file.write_text(json.dumps({'status': 'queued', 'startedAt': datetime.now(timezone.utc).isoformat()}))
+    background_tasks.add_task(run_monitoring_background)
+    return {'status': 'queued', 'message': 'Monitoring and retraining pipeline started. Poll /api/monitoring/pipeline-status.'}
+
+def run_monitoring_background():
+    project_root = Path(__file__).resolve().parent.parent.parent
+    script = project_root / 'ml_pipeline' / 'run_monitoring_pipeline.py'
+    if not script.exists():
+        script = Path('/app/ml_pipeline/run_monitoring_pipeline.py')
+    status_file = ROOT / 'monitoring_status.json'
+    try:
+        status_file.write_text(json.dumps({'status': 'running', 'startedAt': datetime.now(timezone.utc).isoformat()}))
+        result = subprocess.run([sys.executable, str(script)], capture_output=True, text=True, timeout=3600)
+        status_file.write_text(json.dumps({
+            'status': 'completed' if result.returncode == 0 else 'failed',
+            'finishedAt': datetime.now(timezone.utc).isoformat(),
+            'output': result.stdout[-5000:],
+            'error': result.stderr[-5000:]
+        }))
+    except Exception as e:
+        status_file.write_text(json.dumps({'status': 'failed', 'error': str(e)}))
+
+@app.get('/api/monitoring/pipeline-status')
+def get_monitoring_pipeline_status():
+    p = ROOT / 'monitoring_status.json'
+    return json.loads(p.read_text(encoding='utf-8')) if p.exists() else {'status': 'not_started'}
+

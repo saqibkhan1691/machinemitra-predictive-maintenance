@@ -1,5 +1,7 @@
 import sys
+from pathlib import Path
 sys.path.insert(0, '/app')
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from app.main import risk_for
 
 def test_risk_thresholds():
