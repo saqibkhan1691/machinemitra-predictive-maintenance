@@ -491,3 +491,6 @@ MachineMitra was developed as an academic and engineering demonstration of appli
   <sub>Built with ❤️ for modern industrial intelligence and reliable plant engineering.</sub><br/>
   <strong>MachineMitra &copy; 2026</strong>
 </div>
+
+
+develpoed inside kiet group of Institution with training purpose in xebia
